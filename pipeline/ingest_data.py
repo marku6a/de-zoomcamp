@@ -59,11 +59,13 @@ def run(pg_user, pg_pass, pg_host, pg_port, pg_db, year, month, target_table, ch
     first = True
 
     for df_chunk in tqdm(df_iter):
+        df_chunk.columns = df_chunk.columns.str.lower()
         if first:
             df_chunk.head(0).to_sql(
                 target_table, 
                 con=engine, 
-                if_exists="replace"
+                if_exists="replace",
+                index=False
             )
             first = False
             print("Table created")
@@ -71,7 +73,8 @@ def run(pg_user, pg_pass, pg_host, pg_port, pg_db, year, month, target_table, ch
         df_chunk.to_sql(
             target_table , 
             con=engine, 
-             if_exists="append")
+             if_exists="append",
+             index=False)
 
 if __name__ == '__main__':
     run()
